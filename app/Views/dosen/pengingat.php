@@ -170,99 +170,83 @@
     <div class="stat-card total">
       <div>
         <div class="label">Total Pengingat</div>
-        <div class="count">7</div>
+        <div class="count"><?= $totalPengingat ?? 0 ?></div>
       </div>
       <i class="uil uil-bell"></i>
     </div>
     <div class="stat-card upcoming">
       <div>
         <div class="label">Mendatang</div>
-        <div class="count">8</div>
+        <div class="count"><?= $upcoming ?? 0 ?></div>
       </div>
       <i class="bx bx-calendar"></i>
     </div>
     <div class="stat-card urgent">
       <div>
         <div class="label">Prioritas Tinggi</div>
-        <div class="count">5</div>
+        <div class="count"><?= $urgent ?? 0 ?></div>
       </div>
       <i class="uil uil-exclamation-triangle"></i>
     </div>
   </div>
 
   <div class="reminder-list">
-
-    <!-- reminder -->
-    <article class="reminder">
-      <div class="head">
-        <div class="icon"><i class="uil uil-bell"></i></div>
-        <div class="title">Persiapan Minggu Depan</div>
-      </div>
-      <p class="desc">Siapkan materi kuliah untuk pertemuan minggu depan</p>
-      <div class="pills">
-        <span class="pill">Jumat, 7 November 2025</span>
-        <span class="pill">15:00</span>
-        <span class="pill cat-purple">Perkuliahan</span>
-      </div>
-      <div class="status-row"><span class="status sedang">Sedang</span></div>
-    </article>
-
-    <!-- reminder 2 -->
-    <article class="reminder" aria-labelledby="rem2">
-      <div class="head">
-        <div class="icon"><i class="uil uil-bell"></i></div>
-        <div id="rem2" class="title">Persiapan UAS Pemrograman Web</div>
-      </div>
-
-      <p class="desc">Siapkan soal untuk kelas TRPL-5A & TRPL-5C</p>
-
-      <div class="pills">
-        <span class="pill date"><i class="uil uil-calender"></i> Senin, 9 November 2025</span>
-        <span class="pill time"><i class="uil uil-clock"></i> 08:00</span>
-        <span class="pill cat-red"><i class="uil uil-file-alt"></i> Ujian</span>
-        <span class="pill outline">TRPL-5C & TRPL-5A</span>
-      </div>
-
-      <div class="status-row"><span class="status penting">Penting</span></div>
-    </article>
-
-    <!-- reminder 3 -->
-    <article class="reminder" aria-labelledby="rem3">
-      <div class="head">
-        <div class="icon"><i class="uil uil-bell"></i></div>
-        <div id="rem3" class="title">Rapat Dosen Program Studi</div>
-      </div>
-
-      <p class="desc">Rapat evaluasi kurikulum dan pembelajaran semester ini</p>
-
-      <div class="pills">
-        <span class="pill date"><i class="uil uil-calender"></i> Rabu, 10 November 2025</span>
-        <span class="pill time"><i class="uil uil-clock"></i> 10:00</span>
-        <span class="pill cat-purple"><i class="uil uil-comments"></i> Rapat</span>
-      </div>
-
-      <div class="status-row"><span class="status sedang">Sedang</span></div>
-    </article>
-
-    <!-- reminder 4 -->
-    <article class="reminder" aria-labelledby="rem4">
-      <div class="head">
-        <div class="icon"><i class="uil uil-bell"></i></div>
-        <div id="rem4" class="title">Review Tugas Besar Mahasiswa</div>
-      </div>
-
-      <p class="desc">Review dan evaluasi tugas besar mahasiswa kelas TRPL-7C</p>
-
-      <div class="pills">
-        <span class="pill date"><i class="uil uil-calender"></i> Sabtu, 13 November 2025</span>
-        <span class="pill time"><i class="uil uil-clock"></i> 17:00</span>
-        <span class="pill cat-purple"><i class="uil uil-book-alt"></i> Tugas</span>
-        <span class="pill outline">TRPL-7C</span>
-      </div>
-
-      <div class="status-row"><span class="status sedang">Sedang</span></div>
-    </article>
-
+    <?php if (!empty($pengingat)): ?>
+      <?php 
+      $bulanIndo = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      $hariIndo = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      foreach ($pengingat as $p): 
+        $tanggal = $p['tanggal'] ?? '';
+        $waktu = $p['waktu'] ?? '';
+        $judul = $p['judul'] ?? 'Pengingat';
+        $deskripsi = $p['deskripsi'] ?? '';
+        $prioritas = $p['prioritas'] ?? 'Sedang';
+        
+        if ($tanggal) {
+          $tglObj = date_create($tanggal);
+          $hariNama = $hariIndo[date('w', strtotime($tanggal))];
+          $tanggalFormatted = date('d', strtotime($tanggal)) . ' ' . $bulanIndo[date('n', strtotime($tanggal))] . ' ' . date('Y', strtotime($tanggal));
+        }
+        
+        // Warna berdasarkan prioritas
+        $prioritasClass = 'cat-purple';
+        if ($prioritas == 'Tinggi') {
+          $prioritasClass = 'cat-red';
+        } elseif ($prioritas == 'Rendah') {
+          $prioritasClass = 'cat-blue';
+        }
+      ?>
+        <article class="reminder">
+          <div class="head">
+            <div class="icon"><i class="uil uil-bell"></i></div>
+            <div class="title"><?= esc($judul) ?></div>
+          </div>
+          <?php if ($deskripsi): ?>
+            <p class="desc"><?= esc($deskripsi) ?></p>
+          <?php endif; ?>
+          <div class="pills">
+            <?php if ($tanggal): ?>
+              <span class="pill date"><i class="uil uil-calender"></i> <?= $hariNama ?>, <?= $tanggalFormatted ?></span>
+            <?php endif; ?>
+            <?php if ($waktu): ?>
+              <span class="pill time"><i class="uil uil-clock"></i> <?= substr($waktu, 0, 5) ?></span>
+            <?php endif; ?>
+            <span class="pill <?= $prioritasClass ?>"><i class="uil uil-<?= $prioritas == 'Tinggi' ? 'exclamation-triangle' : ($prioritas == 'Rendah' ? 'info-circle' : 'bell') ?>"></i> <?= esc($prioritas) ?></span>
+            <?php if (!empty($p['id_kalender'])): ?>
+              <span class="pill cat-purple"><i class="uil uil-calendar-alt"></i> Kalender Akademik</span>
+            <?php endif; ?>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <article class="reminder">
+        <div class="head">
+          <div class="icon"><i class="uil uil-bell-slash"></i></div>
+          <div class="title">Tidak Ada Pengingat</div>
+        </div>
+        <p class="desc">Belum ada pengingat yang dibuat</p>
+      </article>
+    <?php endif; ?>
   </div>
 </div>
 <?= $this->endSection() ?>

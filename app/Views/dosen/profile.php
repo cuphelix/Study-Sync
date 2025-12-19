@@ -183,21 +183,20 @@
 
 <div class="header-wrap">
   <div class="header-banner"></div>
-  <div class="avatar">DA</div>
+  <div class="avatar"><?= strtoupper(substr($dosen['nama_dosen'] ?? 'D', 0, 1)) ?><?= strtoupper(substr(explode(' ', $dosen['nama_dosen'] ?? 'D')[1] ?? '', 0, 1)) ?></div>
 
   <div class="header-card">
     <button class="edit-btn">Edit Profil</button>
 
-    <div class="name">Dr. Ahmad Wijaya, M.Kom</div>
+    <div class="name"><?= esc($dosen['nama_dosen'] ?? 'Dosen') ?></div>
 
     <div class="badges">
-      <div class="nip-badge">198503152010011001</div>
+      <div class="nip-badge"><?= esc($dosen['nip'] ?? '-') ?></div>
       <div class="status-badge">Aktif</div>
     </div>
 
     <div class="small-labels">
-      <div>Teknik Informatika</div>
-      <div>Fakultas Teknik</div>
+      <div><?= esc($prodi['nama_prodi'] ?? 'Program Studi') ?></div>
     </div>
   </div>
 </div>
@@ -209,36 +208,46 @@
   <div class="info-grid">
     <div>
       <div class="info-label">Nama Lengkap</div>
-      <div class="info-value">Dr. Ahmad Wijaya, M.Kom</div>
+      <div class="info-value"><?= esc($dosen['nama_dosen'] ?? '-') ?></div>
 
       <div class="info-label">NIP</div>
-      <div class="info-value">198503152010011001</div>
+      <div class="info-value"><?= esc($dosen['nip'] ?? '-') ?></div>
 
+      <?php if (!empty($dosen['nidn'])): ?>
       <div class="info-label">NIDN</div>
-      <div class="info-value">0015038501</div>
+      <div class="info-value"><?= esc($dosen['nidn']) ?></div>
+      <?php endif; ?>
 
       <div class="info-label">Email</div>
-      <div class="info-value">ahmad.wijaya@university.ac.id</div>
+      <div class="info-value"><?= esc($dosen['email'] ?? '-') ?></div>
 
-      <div class="info-label">Nomor Telepon</div>
-      <div class="info-value">+62 812-3456-7890</div>
+      <div class="info-label">Nomor WhatsApp</div>
+      <div class="info-value"><?= esc($dosen['no_wa'] ?? '-') ?></div>
     </div>
 
     <div>
-      <div class="info-label">Jabatan Fungsional</div>
-      <div class="info-value">Lektor Kepala</div>
-
       <div class="info-label">Program Studi</div>
-      <div class="info-value">Teknik Informatika</div>
+      <div class="info-value"><?= esc($prodi['nama_prodi'] ?? '-') ?></div>
 
+      <?php if (!empty($dosen['jabatan_fungsional'])): ?>
+      <div class="info-label">Jabatan Fungsional</div>
+      <div class="info-value"><?= esc($dosen['jabatan_fungsional']) ?></div>
+      <?php endif; ?>
+
+      <?php if (!empty($dosen['pendidikan_terakhir'])): ?>
       <div class="info-label">Pendidikan Terakhir</div>
-      <div class="info-value">S3 Ilmu Komputer - Universitas Indonesia</div>
+      <div class="info-value"><?= esc($dosen['pendidikan_terakhir']) ?></div>
+      <?php endif; ?>
 
+      <?php if (!empty($dosen['bidang_keahlian'])): ?>
       <div class="info-label">Bidang Keahlian</div>
-      <div class="info-value">Web Development, Software Engineering</div>
+      <div class="info-value"><?= esc($dosen['bidang_keahlian']) ?></div>
+      <?php endif; ?>
 
+      <?php if (!empty($dosen['jam_kantor'])): ?>
       <div class="info-label">Jam Kantor</div>
-      <div class="info-value">Senin - Jumat, 09:00 - 16:00</div>
+      <div class="info-value"><?= esc($dosen['jam_kantor']) ?></div>
+      <?php endif; ?>
     </div>
   </div>
 </div>
@@ -252,15 +261,15 @@
           <div style="display:flex; gap:30px;">
             <div>
               <div style="color:#6b7280;">Mata Kuliah</div>
-              <div style="font-weight:700;">5</div>
+              <div style="font-weight:700;"><?= $totalMatkul ?? 0 ?></div>
             </div>
             <div>
               <div style="color:#6b7280;">Kelas</div>
-              <div style="font-weight:700;">9</div>
+              <div style="font-weight:700;"><?= $totalKelas ?? 0 ?></div>
             </div>
             <div>
               <div style="color:#6b7280;">Mahasiswa</div>
-              <div style="font-weight:700;">234</div>
+              <div style="font-weight:700;"><?= $totalMahasiswa ?? 0 ?></div>
             </div>
           </div>
         </div>
@@ -271,9 +280,21 @@
     <div class="stat-box stat-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <div style="color:#6b7280; font-weight:700;">Masa Kerja</div>
-          <div style="font-size:28px; font-weight:700;">15</div>
-          <div style="color:#6b7280;">Tahun</div>
+          <div style="color:#6b7280; font-weight:700;"><?= !empty($masaKerja) ? 'Masa Kerja' : 'Total SKS' ?></div>
+          <div style="font-size:28px; font-weight:700;">
+            <?php 
+            if (!empty($masaKerja)) {
+                echo $masaKerja;
+            } else {
+                $totalSKS = 0;
+                foreach ($matakuliah as $mk) {
+                    $totalSKS += isset($mk['sks']) ? (int)$mk['sks'] : 0;
+                }
+                echo $totalSKS;
+            }
+            ?>
+          </div>
+          <div style="color:#6b7280;"><?= !empty($masaKerja) ? 'Tahun' : 'SKS' ?></div>
         </div>
         <div style="opacity:0.6; font-size:26px;"><i class="uil uil-award"></i></div>
       </div>
@@ -299,36 +320,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><span class="kd">TI301</span></td>
-          <td>Pemrograman Web</td>
-          <td>2 Kelas</td>
-          <td>67 Mahasiswa</td>
-        </tr>
-        <tr>
-          <td><span class="kd">TI101</span></td>
-          <td>Algoritma & Pemrograman</td>
-          <td>2 Kelas</td>
-          <td>78 Mahasiswa</td>
-        </tr>
-        <tr>
-          <td><span class="kd">TI301</span></td>
-          <td>Struktur Data</td>
-          <td>1 Kelas</td>
-          <td>36 Mahasiswa</td>
-        </tr>
-        <tr>
-          <td><span class="kd">TI101</span></td>
-          <td>Kecerdasan Buatan</td>
-          <td>1 Kelas</td>
-          <td>25 Mahasiswa</td>
-        </tr>
-        <tr>
-          <td><span class="kd">TI101</span></td>
-          <td>Pemrograman Mobile</td>
-          <td>1 Kelas</td>
-          <td>28 Mahasiswa</td>
-        </tr>
+        <?php if (!empty($matkulGrouped)): ?>
+          <?php foreach ($matkulGrouped as $mk): ?>
+            <tr>
+              <td><span class="kd"><?= esc($mk['kode']) ?></span></td>
+              <td><?= esc($mk['nama']) ?></td>
+              <td><?= $mk['jumlah_kelas'] ?> Kelas</td>
+              <td><?= $mk['jumlah_mahasiswa'] > 0 ? $mk['jumlah_mahasiswa'] . ' Mahasiswa' : '-' ?></td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="4" style="text-align:center; padding:20px; color:#6b7280;">Belum ada mata kuliah yang diajar</td>
+          </tr>
+        <?php endif; ?>
       </tbody>
     </table>
   </div>
@@ -340,41 +345,51 @@
     </div>
 
     <div class="pub-section">
-      <div class="pub-item">
-        <div class="pub-year">2024</div>
-        <div>
-          <div style="font-weight:700; margin-bottom:6px;">Advanced Web Development Techniques Using Modern Frameworks</div>
-          <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">Jurnal Internasional · IEEE Computer Society</div>
-          <div style="display:flex; gap:8px;">
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">Jurnal Internasional</span>
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">IEEE Computer Society</span>
+      <?php if (!empty($publikasi)): ?>
+        <?php foreach ($publikasi as $pub): ?>
+          <div class="pub-item">
+            <div class="pub-year"><?= esc($pub['tahun'] ?? date('Y')) ?></div>
+            <div>
+              <div style="font-weight:700; margin-bottom:6px;"><?= esc($pub['judul']) ?></div>
+              <?php if (!empty($pub['penerbit'])): ?>
+                <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">
+                  <?= esc($pub['jenis']) ?> · <?= esc($pub['penerbit']) ?>
+                </div>
+              <?php else: ?>
+                <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">
+                  <?= esc($pub['jenis']) ?>
+                </div>
+              <?php endif; ?>
+              <?php if (!empty($pub['deskripsi'])): ?>
+                <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">
+                  <?= esc($pub['deskripsi']) ?>
+                </div>
+              <?php endif; ?>
+              <div style="display:flex; gap:8px;">
+                <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">
+                  <?= esc($pub['jenis']) ?>
+                </span>
+                <?php if (!empty($pub['penerbit'])): ?>
+                  <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">
+                    <?= esc($pub['penerbit']) ?>
+                  </span>
+                <?php endif; ?>
+                <?php if (!empty($pub['link'])): ?>
+                  <a href="<?= esc($pub['link']) ?>" target="_blank" style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06); text-decoration:none; color:#2563eb;">
+                    Link
+                  </a>
+                <?php endif; ?>
+              </div>
+            </div>
           </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div style="text-align:center; padding:40px; color:#6b7280;">
+          <i class="uil uil-file-slash" style="font-size:48px; opacity:0.3; margin-bottom:15px;"></i>
+          <p>Belum ada publikasi</p>
+          <p style="font-size:13px; margin-top:8px;">Data publikasi akan ditampilkan di sini</p>
         </div>
-      </div>
-
-      <div class="pub-item">
-        <div class="pub-year">2023</div>
-        <div>
-          <div style="font-weight:700; margin-bottom:6px;">Machine Learning Applications in Software Engineering</div>
-          <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">Konferensi Nasional · APTIKOM</div>
-          <div style="display:flex; gap:8px;">
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">Konferensi Nasional</span>
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">APTIKOM</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="pub-item">
-        <div class="pub-year">2023</div>
-        <div>
-          <div style="font-weight:700; margin-bottom:6px;">Progressive Web Apps: Best Practices and Implementation</div>
-          <div style="font-size:13px; color:#6b7280; margin-bottom:8px;">Jurnal Nasional · Jurnal Teknik Informatika Indonesia</div>
-          <div style="display:flex; gap:8px;">
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">Jurnal Nasional</span>
-            <span style="background:#fff; border-radius:6px; padding:6px 10px; font-size:12px; border:1px solid rgba(0,0,0,0.06);">Jurnal Teknik Informatika Indonesia</span>
-          </div>
-        </div>
-      </div>
+      <?php endif; ?>
     </div>
   </div>
 

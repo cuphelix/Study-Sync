@@ -467,7 +467,7 @@
         <!-- Header -->
         <div class="header">
             <h1>Dashboard Dosen</h1>
-            <p>Selamat datang kembali, Dr. Ahmad Wijaya, M.Kom</p>
+            <p>Selamat datang kembali, <?= esc($dosen->nama_dosen ?? 'Dosen') ?></p>
         </div>
 
         <!-- Stats Cards -->
@@ -475,7 +475,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Jadwal Hari Ini</h3>
-                    <p>2 Kelas</p>
+                    <p><?= $jumlahKelasHariIni ?> Kelas</p>
                 </div>
                 <div class="stat-icon blue">
                     <i class="fas fa-clock"></i>
@@ -485,7 +485,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Total Mata Kuliah</h3>
-                    <p>5 Matkul</p>
+                    <p><?= $totalMataKuliah ?> Matkul</p>
                 </div>
                 <div class="stat-icon purple">
                     <i class="fas fa-book"></i>
@@ -495,7 +495,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Total Mahasiswa</h3>
-                    <p>156 Mhs</p>
+                    <p><?= $totalMahasiswa ?> Mhs</p>
                 </div>
                 <div class="stat-icon green">
                     <i class="fas fa-users"></i>
@@ -505,7 +505,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Pengingat Aktif</h3>
-                    <p>3 Item</p>
+                    <p><?= $totalPengingat ?> Item</p>
                 </div>
                 <div class="stat-icon orange">
                     <i class="fas fa-bell"></i>
@@ -521,138 +521,100 @@
                 <div class="schedule-section">
                     <div class="schedule-header">
                         <h2><i class="fas fa-clock"></i> Jadwal Mengajar Hari Ini</h2>
-                        <p>Selasa, 16 Desember 2025</p>
+                        <p><?= $hariIni ?></p>
                     </div>
 
-                    <div class="schedule-card blue">
-                        <div class="schedule-top">
-                            <div class="schedule-title-section">
-                                <h3 class="schedule-title">Algoritma dan Struktur Data</h3>
-                                <span class="schedule-code">TIF-A</span>
-                            </div>
-                            <div class="schedule-time">
-                                <i class="far fa-clock"></i>
-                                08:00 - 10:00
-                            </div>
-                        </div>
+                    <?php if (!empty($jadwalHariIni)): ?>
+                        <?php 
+                        $colors = ['blue', 'purple', 'orange', 'green'];
+                        $colorIndex = 0;
+                        foreach ($jadwalHariIni as $jadwal): 
+                            $color = $colors[$colorIndex % count($colors)];
+                            $colorIndex++;
+                        ?>
+                            <div class="schedule-card <?= $color ?>">
+                                <div class="schedule-top">
+                                    <div class="schedule-title-section">
+                                        <h3 class="schedule-title"><?= esc($jadwal['nama_matakuliah'] ?? '-') ?></h3>
+                                        <span class="schedule-code"><?= esc($jadwal['kode_matakuliah'] ?? '-') ?></span>
+                                    </div>
+                                    <div class="schedule-time">
+                                        <i class="far fa-clock"></i>
+                                        <?= substr($jadwal['jam_mulai'], 0, 5) ?> - <?= substr($jadwal['jam_selesai'], 0, 5) ?>
+                                    </div>
+                                </div>
 
-                        <p class="schedule-week">Minggu ke-12</p>
+                                <?php if (!empty($jadwal['minggu_ke'])): ?>
+                                    <p class="schedule-week">Minggu ke-<?= $jadwal['minggu_ke'] ?></p>
+                                <?php endif; ?>
 
-                        <div class="schedule-details">
-                            <div class="schedule-detail">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div class="schedule-detail-info">
-                                    <h4>Ruangan</h4>
-                                    <p>Lab Komputer 1</p>
+                                <div class="schedule-details">
+                                    <div class="schedule-detail">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div class="schedule-detail-info">
+                                            <h4>Ruangan</h4>
+                                            <p><?= esc($jadwal['kode_kelas'] ?? '-') ?><?= !empty($jadwal['nama_gedung']) ? ' - ' . esc($jadwal['nama_gedung']) : '' ?></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="schedule-detail">
+                                        <i class="fas fa-calendar"></i>
+                                        <div class="schedule-detail-info">
+                                            <h4>Hari</h4>
+                                            <p><?= esc($jadwal['hari'] ?? '-') ?></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="schedule-detail">
-                                <i class="fas fa-users"></i>
-                                <div class="schedule-detail-info">
-                                    <h4>Jumlah Mahasiswa</h4>
-                                    <p>32 Mahasiswa</p>
-                                </div>
-                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="no-schedule">
+                            <i class="fas fa-calendar-times"></i>
+                            <p>Tidak ada jadwal mengajar hari ini</p>
                         </div>
-                    </div>
-
-                    <div class="schedule-card purple">
-                        <div class="schedule-top">
-                            <div class="schedule-title-section">
-                                <h3 class="schedule-title">Matematika Diskrit</h3>
-                                <span class="schedule-code">TIF-A</span>
-                            </div>
-                            <div class="schedule-time">
-                                <i class="far fa-clock"></i>
-                                13:00 - 15:00
-                            </div>
-                        </div>
-
-                        <p class="schedule-week">Minggu ke-12</p>
-
-                        <div class="schedule-details">
-                            <div class="schedule-detail">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div class="schedule-detail-info">
-                                    <h4>Ruangan</h4>
-                                    <p>Ruang Kelas 301</p>
-                                </div>
-                            </div>
-
-                            <div class="schedule-detail">
-                                <i class="fas fa-users"></i>
-                                <div class="schedule-detail-info">
-                                    <h4>Jumlah Mahasiswa</h4>
-                                    <p>35 Mahasiswa</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Calendar Section -->
                 <div class="calendar-section">
                     <h2><i class="fas fa-calendar"></i> Kalender Bulanan</h2>
                     <div class="calendar-box">
+                        <?php
+                        $year = date('Y');
+                        $month = date('n');
+                        $firstDay = date('w', mktime(0, 0, 0, $month, 1, $year));
+                        $daysInMonth = date('t', mktime(0, 0, 0, $month, 1, $year));
+                        $today = date('j');
+                        $hariNama = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                        $hariSingkat = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+                        ?>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Sen</th>
-                                    <th>Sel</th>
-                                    <th>Rab</th>
-                                    <th>Kam</th>
-                                    <th>Jum</th>
-                                    <th>Sab</th>
-                                    <th>Min</th>
+                                    <?php foreach ($hariSingkat as $h): ?>
+                                        <th><?= $h ?></th>
+                                    <?php endforeach; ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>3</td>
-                                    <td>4</td>
-                                    <td>5</td>
-                                    <td>6</td>
-                                    <td>7</td>
-                                </tr>
-                                <tr>
-                                    <td>8</td>
-                                    <td>9</td>
-                                    <td>10</td>
-                                    <td>11</td>
-                                    <td>12</td>
-                                    <td>13</td>
-                                    <td>14</td>
-                                </tr>
-                                <tr>
-                                    <td>15</td>
-                                    <td style="background: #3b82f6; color: white; font-weight: 600;">16</td>
-                                    <td>17</td>
-                                    <td>18</td>
-                                    <td>19</td>
-                                    <td>20</td>
-                                    <td>21</td>
-                                </tr>
-                                <tr>
-                                    <td>22</td>
-                                    <td>23</td>
-                                    <td>24</td>
-                                    <td>25</td>
-                                    <td>26</td>
-                                    <td>27</td>
-                                    <td>28</td>
-                                </tr>
-                                <tr>
-                                    <td>29</td>
-                                    <td>30</td>
-                                    <td>31</td>
-                                    <td style="background: transparent;"></td>
-                                    <td style="background: transparent;"></td>
-                                    <td style="background: transparent;"></td>
-                                    <td style="background: transparent;"></td>
-                                </tr>
+                                <?php
+                                $day = 1;
+                                $currentWeek = 0;
+                                while ($day <= $daysInMonth) {
+                                    echo '<tr>';
+                                    for ($i = 0; $i < 7; $i++) {
+                                        if (($currentWeek == 0 && $i < $firstDay) || $day > $daysInMonth) {
+                                            echo '<td style="background: transparent;"></td>';
+                                        } else {
+                                            $highlight = ($day == $today) ? 'style="background: #3b82f6; color: white; font-weight: 600;"' : '';
+                                            echo "<td $highlight>$day</td>";
+                                            $day++;
+                                        }
+                                    }
+                                    echo '</tr>';
+                                    $currentWeek++;
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -662,45 +624,52 @@
             <!-- Right Sidebar -->
             <div class="right-sidebar">
                 <h2><i class="fas fa-bell"></i> Pengingat</h2>
-                <span class="tag-pengingat">3 Pengingat Aktif</span>
+                <span class="tag-pengingat"><?= $totalPengingat ?> Pengingat Aktif</span>
 
-                <div class="pengingat-item">
-                    <div class="pengingat-content">
-                        <i class="fas fa-book-open"></i>
-                        <div class="pengingat-text">
-                            <p>Siapkan materi kuliah minggu depan</p>
-                            <span class="tanggal">Kamis, 15 Mei • 08:00</span>
+                <?php if (!empty($pengingat)): ?>
+                    <?php foreach ($pengingat as $p): ?>
+                        <div class="pengingat-item">
+                            <div class="pengingat-content">
+                                <i class="fas fa-bell"></i>
+                                <div class="pengingat-text">
+                                    <p><?= esc($p['judul'] ?? '-') ?></p>
+                                    <span class="tanggal">
+                                        <?php
+                                        $tanggal = $p['tanggal'] ?? '';
+                                        $waktu = $p['waktu'] ?? '';
+                                        if ($tanggal) {
+                                            $tgl = date('d F Y', strtotime($tanggal));
+                                            echo $tgl;
+                                            if ($waktu) {
+                                                echo ' • ' . substr($waktu, 0, 5);
+                                            }
+                                        }
+                                        ?>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="pengingat-item">
+                        <div class="pengingat-content">
+                            <i class="fas fa-bell-slash"></i>
+                            <div class="pengingat-text">
+                                <p>Tidak ada pengingat aktif</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="pengingat-item">
-                    <div class="pengingat-content">
-                        <i class="fas fa-envelope"></i>
-                        <div class="pengingat-text">
-                            <p>Periksa email mahasiswa</p>
-                            <span class="tanggal">Kamis, 15 Mei • 10:00</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pengingat-item">
-                    <div class="pengingat-content">
-                        <i class="fas fa-upload"></i>
-                        <div class="pengingat-text">
-                            <p>Unggah nilai ujian semester</p>
-                            <span class="tanggal">Jumat, 16 Mei • 14:00</span>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
 
                 <!-- Profile Card -->
                 <div class="profil-card">
-                    <img src="<?= base_url('assets/img/pp.jpeg') ?>" alt="Profile">
-                    <h3>Dr. Ahmad Wijaya, M.Kom</h3>
-                    <p>Dosen Teknik Informatika</p>
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 32px; font-weight: 700;">
+                        <?= strtoupper(substr($dosen->nama_dosen ?? 'D', 0, 1)) ?>
+                    </div>
+                    <h3><?= esc($dosen->nama_dosen ?? 'Dosen') ?></h3>
+                    <p><?= esc($prodi->nama_prodi ?? 'Program Studi') ?></p>
 
-                    <button class="btn-profile" onclick="location.href='<?= base_url('/profile') ?>'">
+                    <button class="btn-profile" onclick="location.href='<?= base_url('dosen/profile') ?>'">
                         <i class="fas fa-user"></i> Lihat Profil
                     </button>
                     <button class="btn-logout" onclick="location.href='<?= base_url('logout') ?>'">

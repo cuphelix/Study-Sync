@@ -15,7 +15,8 @@ class PengingatModel extends Model
         'tanggal',
         'waktu',
         'id_kalender',
-        'aktif'
+        'aktif',
+        'prioritas'
     ];
 
     public function getByDosen($id_dosen)
@@ -24,6 +25,27 @@ class PengingatModel extends Model
             ->where('aktif', 1)
             ->orderBy('tanggal', 'ASC')
             ->orderBy('waktu', 'ASC')
+            ->findAll();
+    }
+    
+    public function getByPrioritas($id_dosen, $prioritas = 'Tinggi')
+    {
+        return $this->where('id_user', $id_dosen)
+            ->where('aktif', 1)
+            ->where('prioritas', $prioritas)
+            ->orderBy('tanggal', 'ASC')
+            ->orderBy('waktu', 'ASC')
+            ->findAll();
+    }
+    
+    public function getUpcoming($id_dosen, $limit = 5)
+    {
+        return $this->where('id_user', $id_dosen)
+            ->where('aktif', 1)
+            ->where('tanggal >=', date('Y-m-d'))
+            ->orderBy('tanggal', 'ASC')
+            ->orderBy('waktu', 'ASC')
+            ->limit($limit)
             ->findAll();
     }
 }

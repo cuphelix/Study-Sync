@@ -12,10 +12,17 @@ class DosenModel extends Model
     protected $allowedFields = [
         'nama_dosen',
         'nip',
+        'nidn',
         'email',
         'password',
         'no_wa',
         'id_prodi',
+        'jabatan_fungsional',
+        'pendidikan_terakhir',
+        'bidang_keahlian',
+        'jam_kantor',
+        'tanggal_mulai',
+        'foto',
     ];
 
     /**

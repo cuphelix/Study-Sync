@@ -9,6 +9,7 @@ use App\Models\dosen\MatakuliahModel;
 use App\Models\dosen\KelasModel;
 use App\Models\dosen\MahasiswaModel;
 use App\Models\dosen\PengingatModel;
+use App\Models\dosen\KelasMahasiswaModel;
 
 class Dashboard extends BaseController
 {
@@ -17,6 +18,7 @@ class Dashboard extends BaseController
     protected $matakuliahModel;
     protected $mahasiswaModel;
     protected $pengingatModel;
+    protected $kelasMahasiswaModel;
     protected $db;
 
     public function __construct()
@@ -26,6 +28,7 @@ class Dashboard extends BaseController
         $this->matakuliahModel = new MatakuliahModel();
         $this->mahasiswaModel = new MahasiswaModel();
         $this->pengingatModel = new PengingatModel();
+        $this->kelasMahasiswaModel = new KelasMahasiswaModel();
         $this->db = \Config\Database::connect();
     }
 
@@ -49,19 +52,29 @@ class Dashboard extends BaseController
             ->where('id_dosen', $idDosen)
             ->countAllResults();
 
-        // 4. Total Mahasiswa - karena tidak ada tabel kelas_mahasiswa, 
-        // kita bisa hitung dari prodi yang sama atau set default
-        // Alternatif: hitung mahasiswa dari prodi dosen
-        $totalMahasiswa = $this->db->table('t_mahasiswa tm')
-            ->join('t_prodi tp', 'tp.id_prodi = tm.id_prodi')
-            ->join('t_matakuliah tmk', 'tmk.id_prodi = tp.id_prodi')
-            ->where('tmk.id_dosen', $idDosen)
+        // 4. Total Mahasiswa - gunakan tabel t_kelas_mahasiswa jika ada, fallback ke prodi
+        $totalMahasiswa = $this->db->table('t_kelas_mahasiswa tkm')
+            ->select('DISTINCT tkm.id_mahasiswa')
+            ->join('t_matakuliah tm', 'tm.id_matakuliah = tkm.id_matakuliah', 'left')
+            ->where('tm.id_dosen', $idDosen)
+            ->where('tkm.status', 'Aktif')
             ->countAllResults();
-
-        // Atau jika ingin lebih sederhana, gunakan estimasi dari jumlah mata kuliah
-        // Misalnya: rata-rata 30 mahasiswa per mata kuliah
+        
+        // Fallback jika tabel t_kelas_mahasiswa kosong
         if ($totalMahasiswa == 0) {
-            $totalMahasiswa = $totalMataKuliah * 30; // estimasi
+            $totalMahasiswa = $this->db->table('t_mahasiswa tm')
+                ->select('tm.id_mahasiswa')
+                ->join('t_prodi tp', 'tp.id_prodi = tm.id_prodi')
+                ->join('t_matakuliah tmk', 'tmk.id_prodi = tp.id_prodi')
+                ->where('tmk.id_dosen', $idDosen)
+                ->where('tm.status', 'Aktif')
+                ->groupBy('tm.id_mahasiswa')
+                ->countAllResults();
+            
+            // Jika masih 0, gunakan estimasi
+            if ($totalMahasiswa == 0) {
+                $totalMahasiswa = $totalMataKuliah * 30; // estimasi
+            }
         }
 
         // 5. Jumlah Kelas Hari Ini
@@ -73,10 +86,19 @@ class Dashboard extends BaseController
 
         // 7. Format Tanggal Hari Ini
         $hariIni = $this->formatTanggalIndonesia(date('Y-m-d'));
+        
+        // 8. Ambil data prodi untuk nama prodi
+        $prodi = null;
+        if ($dosen && $dosen->id_prodi) {
+            $prodi = $this->db->table('t_prodi')
+                ->where('id_prodi', $dosen->id_prodi)
+                ->get()->getRow();
+        }
 
         $data = [
             'title' => 'Dashboard Dosen',
             'dosen' => $dosen,
+            'prodi' => $prodi,
             'jadwalHariIni' => $jadwalHariIni,
             'jumlahKelasHariIni' => $jumlahKelasHariIni,
             'totalMataKuliah' => $totalMataKuliah,

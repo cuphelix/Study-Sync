@@ -17,6 +17,7 @@ class MahasiswaModel extends Model
         'tahun_masuk',
         'semester',
         'id_prodi',
+        'status',
     ];
 
     /**
@@ -62,14 +63,11 @@ class MahasiswaModel extends Model
         return (int) $this->countAllResults(false);
     }
 
-    /**
-     * Contoh: total aktif -> kita anggap 'aktif' adalah mahasiswa dengan semester > 0
-     * Ubah sesuai definisi status di DB Anda.
-     */
     public function getTotalMahasiswaAktif(): int
     {
-        $builder = $this->db->table('t_mahasiswa')->where('semester IS NOT NULL');
-        return (int) $builder->countAllResults();
+        return (int) $this->db->table('t_mahasiswa')
+            ->where('status', 'Aktif')
+            ->countAllResults();
     }
 
     /**

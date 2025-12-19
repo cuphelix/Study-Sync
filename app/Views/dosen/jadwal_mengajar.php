@@ -233,7 +233,7 @@ block-green { background: #d7f5d6; border-radius: 6px; padding: 5px; }
 
         <div class="stat-card card-purple">
             <small>Total Kelas</small>
-            <h3>7</h3>
+            <h3><?= $totalKelas ?? 0 ?></h3>
             <div class="stat-icon-circle">
                 <i class="uil uil-book-open" style="font-size:26px;"></i>
             </div>
@@ -241,7 +241,7 @@ block-green { background: #d7f5d6; border-radius: 6px; padding: 5px; }
 
         <div class="stat-card card-blue">
             <small>Total Mahasiswa</small>
-            <h3>225</h3>
+            <h3><?= $totalMahasiswa ?? 0 ?></h3>
             <div class="stat-icon-circle">
                 <i class="uil uil-users-alt" style="font-size:26px;"></i>
             </div>
@@ -249,7 +249,7 @@ block-green { background: #d7f5d6; border-radius: 6px; padding: 5px; }
 
         <div class="stat-card card-green">
             <small>Mata Kuliah</small>
-            <h3>5</h3>
+            <h3><?= $totalMatkul ?? 0 ?></h3>
             <div class="stat-icon-circle">
                 <i class="uil uil-notebooks" style="font-size:26px;"></i>
             </div>
@@ -259,99 +259,66 @@ block-green { background: #d7f5d6; border-radius: 6px; padding: 5px; }
 
 
     <!-- ======= TABEL JADWAL ======= -->
+    <?php
+    $jamList = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
+    $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'];
+    $colors = ['blue', 'green', 'purple', 'brown', 'red'];
+    $displayedJadwal = [];
+    ?>
     <table class="schedule-table">
         <thead>
             <tr>
                 <th>Waktu</th>
-                <th>Senin</th>
-                <th>Selasa</th>
-                <th>Rabu</th>
-                <th>Kamis</th>
-                <th>Jumat</th>
+                <?php foreach ($hariList as $h): ?>
+                    <th><?= $h ?></th>
+                <?php endforeach; ?>
             </tr>
         </thead>
 
         <tbody>
-            <tr>
-                <td>08:00</td>
-                <td class="block-blue">
-                    Pemrograman Web<br>
-                    TI301 TI-5A<br>
-                    08:00 - 10:00<br>
-                    Lab. Komputer 1<br>
-                    35 Mhs
-                </td>
-                <td></td>
-                <td class="block-green">
-                    Basis Data Lanjut<br>
-                    TI401 TI-7A<br>
-                    08:00 - 10:00<br>
-                    Lab. Database<br>
-                    28 Mhs
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-
-            <tr>
-                <td>09:00</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="block-purple">
-                    Sistem Informasi<br>
-                    SI201 SI-3B<br>
-                    09:00 - 11:00<br>
-                    Ruang 310<br>
-                    38 Mhs
-                </td>
-                <td></td>
-            </tr>
-
-            <tr>
-                <td>10:00</td>
-                <td></td>
-                <td class="block-brown">
-                    Sistem Informasi<br>
-                    SI201 SI-3A<br>
-                    10:00 - 12:00<br>
-                    Ruang 305<br>
-                    40 Mhs
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-
-            <tr>
-                <td>13:00</td>
-                <td class="block-red">
-                    Pemrograman Web<br>
-                    TI301 TI-5B<br>
-                    13:00 - 15:00<br>
-                    Lab. Komputer 2<br>
-                    32 Mhs
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-
-            <tr>
-                <td>14:00</td>
-                <td></td>
-                <td class="block-blue">
-                    Pemrograman Mobile<br>
-                    TI402 TI-7B<br>
-                    14:00 - 16:00<br>
-                    Lab. Komputer 3<br>
-                    30 Mhs
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            <?php foreach ($jamList as $jam): ?>
+                <tr>
+                    <td><?= $jam ?></td>
+                    <?php foreach ($hariList as $hari): ?>
+                        <td>
+                            <?php 
+                            foreach ($jadwal as $item): 
+                                $jadwalKey = $item['id_jadwal'] . '_' . $hari;
+                                if (isset($displayedJadwal[$jadwalKey])) {
+                                    continue;
+                                }
+                                
+                                if ($item['hari'] != $hari) {
+                                    continue;
+                                }
+                                
+                                $jamSlot = (int)substr($jam, 0, 2);
+                                $jamMulai = (int)substr($item['jam_mulai'], 0, 2);
+                                $menitMulai = (int)substr($item['jam_mulai'], 3, 2);
+                                $jamSelesai = (int)substr($item['jam_selesai'], 0, 2);
+                                
+                                $jamMulaiDecimal = $jamMulai + ($menitMulai / 60);
+                                $jamSelesaiDecimal = $jamSelesai + ((int)substr($item['jam_selesai'], 3, 2) / 60);
+                                
+                                if ($jamMulaiDecimal <= $jamSlot && $jamSlot < $jamSelesaiDecimal) {
+                                    $displayedJadwal[$jadwalKey] = true;
+                                    $colorIndex = ($item['id_jadwal'] % count($colors));
+                                    $colorClass = 'block-' . $colors[$colorIndex];
+                                    ?>
+                                    <div class="<?= $colorClass ?>">
+                                        <?= esc($item['nama_matakuliah'] ?? '-') ?><br>
+                                        <?= esc($item['kode_matakuliah'] ?? '-') ?> <?= esc($item['kode_kelas'] ?? '-') ?><br>
+                                        <?= substr($item['jam_mulai'], 0, 5) ?> - <?= substr($item['jam_selesai'], 0, 5) ?><br>
+                                        <?= esc($item['nama_gedung'] ?? $item['kode_kelas'] ?? '-') ?>
+                                    </div>
+                                    <?php
+                                }
+                            endforeach; 
+                            ?>
+                        </td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 

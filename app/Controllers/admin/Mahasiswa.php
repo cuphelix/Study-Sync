@@ -46,13 +46,15 @@ class Mahasiswa extends BaseController
         $total = $this->mahasiswaModel->getTotalMahasiswa();
         $aktif = $this->mahasiswaModel->getTotalMahasiswaAktif();
 
-        // rata-rata ipk global (coba dari tabel t_nilai kalau ada)
+        // rata-rata ipk global dari tabel t_nilai
         $avgIpk = null;
         try {
-            $db = \Config\Database::connect();
-            if ($db->tableExists('t_nilai')) {
-                $row = $db->table('t_nilai')->select('AVG(nilai) AS avg_ipk')->get()->getRowArray();
-                $avgIpk = isset($row['avg_ipk']) ? (float) number_format((float)$row['avg_ipk'], 2, '.', '') : null;
+            $nilaiModel = new \App\Models\admin\NilaiModel();
+            $avgIpk = $nilaiModel->getRataRataIPK();
+            if ($avgIpk > 0) {
+                $avgIpk = number_format($avgIpk, 2, '.', '');
+            } else {
+                $avgIpk = null;
             }
         } catch (\Exception $e) {
             $avgIpk = null;

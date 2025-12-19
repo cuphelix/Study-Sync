@@ -227,7 +227,7 @@
         <div class="stat-card card-1">
             <div>
                 <p class="stat-title">Total Mahasiswa</p>
-                <p class="stat-value value-1">12</p>
+                <p class="stat-value value-1"><?= $totalMahasiswa ?? 0 ?></p>
             </div>
             <div class="stat-icon circle-1">
                 <i class="uil uil-users-alt"></i>
@@ -238,7 +238,7 @@
         <div class="stat-card card-2">
             <div>
                 <p class="stat-title">Mahasiswa Aktif</p>
-                <p class="stat-value value-2">12</p>
+                <p class="stat-value value-2"><?= $totalAktif ?? 0 ?></p>
             </div>
             <div class="stat-icon circle-2">
                 <i class="uil uil-user-check"></i>
@@ -249,7 +249,7 @@
         <div class="stat-card card-3">
             <div>
                 <p class="stat-title">IPK Rata-rata</p>
-                <p class="stat-value value-3">3,80</p>
+                <p class="stat-value value-3"><?= $ipkRataRata > 0 ? number_format($ipkRataRata, 2) : '-' ?></p>
             </div>
             <div class="stat-icon circle-3">
                 <i class="uil uil-graduation-cap"></i>
@@ -282,113 +282,41 @@
             </thead>
 
             <tbody>
-                <tr>
-                    <td>230301001</td>
-                    <td>Lukman Hakim</td>
-                    <td>TI-5A</td>
-                    <td>Semester 5</td>
-                    <td>Pemrograman Web</td>
-                    <td>3.75</td>
-                    <td>Aktif</td>
-                </tr>
-                <tr>
-                    <td>230301002</td>
-                    <td>Kurnia Sari</td>
-                    <td>TI-5B</td>
-                    <td>Semester 5</td>
-                    <td>Pemrograman Web</td>
-                    <td>3.58</td>
-                    <td>Aktif</td>
-                </tr>
-                <tr>
-                    <td>230301003</td>
-                    <td>Julia Puspita</td>
-                    <td>TI-5C</td>
-                    <td>Semester 5</td>
-                    <td>Pemrograman Web</td>
-                    <td>3.98</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301004</td>
-                    <td>Irfan Hakim</td>
-                    <td>TI-1A</td>
-                    <td>Semester 1</td>
-                    <td>Algoritma & Pemrograman</td>
-                    <td>3.45</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301005</td>
-                    <td>Hani Rahmawati</td>
-                    <td>TI-1B</td>
-                    <td>Semester 1</td>
-                    <td>Algoritma & Pemrograman</td>
-                    <td>3.88</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301006</td>
-                    <td>Gunawan Pratama</td>
-                    <td>TI-1C</td>
-                    <td>Semester 1</td>
-                    <td>Algoritma & Pemrograman</td>
-                    <td>3.62</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301007</td>
-                    <td>Fitril Handayani</td>
-                    <td>TI-3A</td>
-                    <td>Semester 3</td>
-                    <td>Pemrograman Mobile</td>
-                    <td>3.50</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301008</td>
-                    <td>Budi Santoso</td>
-                    <td>TI-3B</td>
-                    <td>Semester 3</td>
-                    <td>Pemrograman Mobile</td>
-                    <td>3.95</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301009</td>
-                    <td>Eko Wijaya</td>
-                    <td>TI-3C</td>
-                    <td>Semester 3</td>
-                    <td>Pemrograman Mobile</td>
-                    <td>3.80</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301010</td>
-                    <td>Dewi Lestari</td>
-                    <td>TI-7A</td>
-                    <td>Semester 7</td>
-                    <td>Struktur Data</td>
-                    <td>3.72</td>
-                    <td>Aktif</td>
-                </tr>
-
-                <tr>
-                    <td>230301011</td>
-                    <td>Siti Nurlailaa</td>
-                    <td>TI-7B</td>
-                    <td>Semester 7</td>
-                    <td>Struktur Data</td>
-                    <td>3.62</td>
-                    <td>Aktif</td>
-                </tr>
+                <?php if (!empty($mahasiswa)): ?>
+                    <?php foreach ($mahasiswa as $mhs): ?>
+                        <tr>
+                            <td><?= esc($mhs['nim'] ?? '-') ?></td>
+                            <td><?= esc($mhs['nama_mahasiswa'] ?? '-') ?></td>
+                            <td>-</td>
+                            <td>Semester <?= $mhs['semester'] ?? '-' ?></td>
+                            <td><?= esc($mhs['nama_prodi'] ?? '-') ?></td>
+                            <td><?= isset($mhs['ipk']) && $mhs['ipk'] > 0 ? number_format($mhs['ipk'], 2) : '-' ?></td>
+                            <td>
+                                <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; 
+                                    <?php 
+                                    $status = $mhs['status'] ?? 'Aktif';
+                                    if ($status == 'Aktif') {
+                                        echo 'background: #dcfce7; color: #166534;';
+                                    } elseif ($status == 'Non-aktif') {
+                                        echo 'background: #fee2e2; color: #991b1b;';
+                                    } elseif ($status == 'Cuti') {
+                                        echo 'background: #fef3c7; color: #92400e;';
+                                    } else {
+                                        echo 'background: #e0e7ff; color: #3730a3;';
+                                    }
+                                    ?>">
+                                    <?= esc($status) ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:30px; color:#6b7280;">
+                            Tidak ada data mahasiswa
+                        </td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
