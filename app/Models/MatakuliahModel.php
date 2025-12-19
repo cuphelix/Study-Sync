@@ -12,9 +12,11 @@ class MatakuliahModel extends Model
         'kode_matakuliah',
         'nama_matakuliah',
         'semester',
+        'sks',
         'id_dosen',
         'id_prodi',
-        'id_kelas'
+        'id_kelas',
+        'jenis'
     ];
 
     public function getMatakuliahByMahasiswa($id_mahasiswa)

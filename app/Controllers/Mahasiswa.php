@@ -33,7 +33,7 @@ class Mahasiswa extends BaseController
         $data['mahasiswa'] = $this->mahasiswaModel->getMahasiswaDetail($id_mahasiswa);
         $data['today'] = date('l, d F Y');
         $data['hari_ini'] = $this->getHariIndonesia(date('l'));
-        $data['jadwal_hari_ini'] = $this->jadwalModel->getJadwalHariIni($data['hari_ini']);
+        $data['jadwal_hari_ini'] = $this->jadwalModel->getJadwalHariIni($data['hari_ini'], $id_mahasiswa);
         $data['total_kelas_hari_ini'] = count($data['jadwal_hari_ini']);
         $data['total_sks'] = 21;
         $data['pengingat_aktif'] = $this->pengingatModel->getPengingatAktif($id_mahasiswa);
@@ -76,7 +76,7 @@ class Mahasiswa extends BaseController
 
         $data['total_sks'] = 0;
         foreach ($data['matakuliah'] as $mk) {
-            $data['total_sks'] += 3;
+            $data['total_sks'] += isset($mk->sks) ? (int)$mk->sks : 3;
         }
 
         return view('mahasiswa/matakuliah', $data);
@@ -104,7 +104,7 @@ class Mahasiswa extends BaseController
     {
         $id_mahasiswa = session()->get('id_mahasiswa') ?? 1;
 
-        $data['jadwal'] = $this->jadwalModel->getJadwalWithDetails();
+        $data['jadwal'] = $this->jadwalModel->getJadwalWithDetails($id_mahasiswa);
         $data['title'] = 'Jadwal Kuliah';
 
         return view('mahasiswa/jadwal', $data);

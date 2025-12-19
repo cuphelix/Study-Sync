@@ -9,6 +9,7 @@ class JadwalKuliahModel extends Model
     protected $table = 'jadwal_kuliah';
     protected $primaryKey = 'id_jadwal';
     protected $allowedFields = [
+        'id_mahasiswa',
         'id_mk',
         'id_dosen',
         'id_ruangan',
@@ -20,9 +21,9 @@ class JadwalKuliahModel extends Model
         'semester'
     ];
 
-    public function getJadwalHariIni($hari)
+    public function getJadwalHariIni($hari, $id_mahasiswa = null)
     {
-        return $this->select('
+        $query = $this->select('
                 jadwal_kuliah.*,
                 t_matakuliah.kode_matakuliah,
                 t_matakuliah.nama_matakuliah,
@@ -32,15 +33,31 @@ class JadwalKuliahModel extends Model
             ->join('t_matakuliah', 't_matakuliah.id_matakuliah = jadwal_kuliah.id_mk', 'left')
             ->join('t_dosen', 't_dosen.id_dosen = jadwal_kuliah.id_dosen', 'left')
             ->join('t_kelas', 't_kelas.id_kelas = jadwal_kuliah.id_ruangan', 'left')
-            ->where('jadwal_kuliah.hari', $hari)
-            ->orderBy('jadwal_kuliah.jam_mulai', 'ASC')
+            ->where('jadwal_kuliah.hari', $hari);
+        
+        if ($id_mahasiswa !== null) {
+            $query->where('jadwal_kuliah.id_mahasiswa', $id_mahasiswa);
+        }
+        
+        return $query->orderBy('jadwal_kuliah.jam_mulai', 'ASC')
             ->findAll();
     }
 
-    public function getJadwalWithDetails()
+    public function getJadwalWithDetails($id_mahasiswa = null)
     {
-        return $this->select('
-                jadwal_kuliah.*,
+        // Gunakan query builder dengan LEFT JOIN yang benar
+        $query = $this->select('
+                jadwal_kuliah.id_jadwal,
+                jadwal_kuliah.id_mahasiswa,
+                jadwal_kuliah.id_mk,
+                jadwal_kuliah.id_dosen,
+                jadwal_kuliah.id_ruangan,
+                jadwal_kuliah.hari,
+                jadwal_kuliah.jam_mulai,
+                jadwal_kuliah.jam_selesai,
+                jadwal_kuliah.minggu_ke,
+                jadwal_kuliah.tahun_ajaran,
+                jadwal_kuliah.semester,
                 t_matakuliah.kode_matakuliah,
                 t_matakuliah.nama_matakuliah as nama_mk,
                 t_dosen.nama_dosen,
@@ -48,8 +65,16 @@ class JadwalKuliahModel extends Model
             ')
             ->join('t_matakuliah', 't_matakuliah.id_matakuliah = jadwal_kuliah.id_mk', 'left')
             ->join('t_dosen', 't_dosen.id_dosen = jadwal_kuliah.id_dosen', 'left')
-            ->join('t_kelas', 't_kelas.id_kelas = jadwal_kuliah.id_ruangan', 'left')
-            ->orderBy("FIELD(jadwal_kuliah.hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu')", '', false)
+            ->join('t_kelas', 't_kelas.id_kelas = jadwal_kuliah.id_ruangan', 'left');
+        
+        if ($id_mahasiswa !== null) {
+            $query->where('jadwal_kuliah.id_mahasiswa', $id_mahasiswa);
+        }
+        
+        // Pastikan tidak ada duplikasi dengan DISTINCT atau GROUP BY
+        $query->groupBy('jadwal_kuliah.id_jadwal');
+        
+        return $query->orderBy("FIELD(jadwal_kuliah.hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu')", '', false)
             ->orderBy('jadwal_kuliah.jam_mulai', 'ASC')
             ->findAll();
     }

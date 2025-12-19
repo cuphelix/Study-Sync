@@ -245,6 +245,7 @@
 
         <div class="schedule-container">
             <?php
+            // Slot waktu per jam; gunakan untuk menempatkan jadwal ke baris yang benar
             $jamList = [
                 "08:00",
                 "09:00",
@@ -256,7 +257,8 @@
                 "15:00",
                 "16:00"
             ];
-            $hariList = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
+            // Sertakan Sabtu bila ada jadwal di hari tersebut
+            $hariList = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
             ?>
 
             <table class="schedule-table">
@@ -267,6 +269,10 @@
                     <?php endforeach ?>
                 </tr>
 
+                <?php 
+                // Buat array untuk tracking jadwal yang sudah ditampilkan per hari
+                $displayedJadwal = [];
+                ?>
                 <?php foreach ($jamList as $jam): ?>
                     <tr>
                         <td class="time-col"><?= $jam ?></td>
@@ -274,7 +280,32 @@
                         <?php foreach ($hariList as $hari): ?>
                             <td>
                                 <?php foreach ($jadwal as $item): ?>
-                                    <?php if ($item['hari'] == $hari && substr($item['jam_mulai'], 0, 5) == $jam): ?>
+                                    <?php
+                                    // Skip jika jadwal ini sudah ditampilkan sebelumnya
+                                    $jadwalKey = $item['id_jadwal'] . '_' . $hari;
+                                    if (isset($displayedJadwal[$jadwalKey])) {
+                                        continue;
+                                    }
+                                    
+                                    // Cek apakah jadwal ini untuk hari ini
+                                    if ($item['hari'] != $hari) {
+                                        continue;
+                                    }
+                                    
+                                    // Konversi jam ke format yang bisa dibandingkan
+                                    $jamSlot = (int)substr($jam, 0, 2);
+                                    $jamMulai = (int)substr($item['jam_mulai'], 0, 2);
+                                    $menitMulai = (int)substr($item['jam_mulai'], 3, 2);
+                                    $jamSelesai = (int)substr($item['jam_selesai'], 0, 2);
+                                    $menitSelesai = (int)substr($item['jam_selesai'], 3, 2);
+                                    
+                                    $jamMulaiDecimal = $jamMulai + ($menitMulai / 60);
+                                    $jamSelesaiDecimal = $jamSelesai + ($menitSelesai / 60);
+                                    
+                                    // Tampilkan hanya di slot pertama yang overlap (dimana jam_mulai <= jam slot < jam_selesai)
+                                    if ($jamMulaiDecimal <= $jamSlot && $jamSlot < $jamSelesaiDecimal) {
+                                        $displayedJadwal[$jadwalKey] = true;
+                                        ?>
                                         <div class="event-card">
                                             <div class="event-title">
                                                 <?= esc($item['nama_mk']) ?>
@@ -295,7 +326,9 @@
                                                 <?= esc($item['nama_ruangan']) ?>
                                             </div>
                                         </div>
-                                    <?php endif ?>
+                                        <?php
+                                    }
+                                    ?>
                                 <?php endforeach ?>
                             </td>
                         <?php endforeach ?>

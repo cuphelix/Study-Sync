@@ -26,7 +26,7 @@ class Dashboard extends BaseController
         $data['mahasiswa'] = $this->mahasiswaModel->getMahasiswaDetail($id_mahasiswa);
         $data['today'] = date('l, d F Y');
         $data['hari_ini'] = $this->getHariIndonesia(date('l'));
-        $data['jadwal_hari_ini'] = $this->jadwalModel->getJadwalHariIni($data['hari_ini']);
+        $data['jadwal_hari_ini'] = $this->jadwalModel->getJadwalHariIni($data['hari_ini'], $id_mahasiswa);
         $data['total_kelas_hari_ini'] = count($data['jadwal_hari_ini']);
         $data['total_sks'] = 21;
         $data['pengingat_aktif'] = $this->pengingatModel->getPengingatAktif($id_mahasiswa);

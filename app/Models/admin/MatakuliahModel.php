@@ -12,6 +12,7 @@ class MatakuliahModel extends Model
     protected $allowedFields = [
         'kode_matakuliah',
         'nama_matakuliah',
+        'semester',
         'sks',
         'id_prodi',
         'id_dosen',

@@ -12,6 +12,8 @@ class KalenderAkademikModel extends Model
         'nama_kegiatan',
         'tanggal_mulai',
         'tanggal_selesai',
-        'deskripsi'
+        'deskripsi',
+        'tipe_event',
+        'semester'
     ];
 }
