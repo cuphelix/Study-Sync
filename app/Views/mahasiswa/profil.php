@@ -521,10 +521,6 @@
                             <p class="profile-details">Semester <?= $mahasiswa['semester'] ?> | IPK <?= number_format($ipk, 2) ?></p>
                         </div>
                     </div>
-                    <a href="#" class="edit-btn" onclick="alert('Fitur edit profil akan segera hadir!')">
-                        <i class="fas fa-edit"></i>
-                        Edit Profil
-                    </a>
                 </div>
             </div>
 

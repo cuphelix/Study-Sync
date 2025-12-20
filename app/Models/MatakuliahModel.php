@@ -21,15 +21,22 @@ class MatakuliahModel extends Model
 
     public function getMatakuliahByMahasiswa($id_mahasiswa)
     {
+        // PERBAIKAN: Filter berdasarkan t_kelas_mahasiswa, bukan id_prodi
         return $this->select('
                 t_matakuliah.*,
                 t_dosen.nama_dosen,
-                t_kelas.kode_kelas
+                t_kelas.kode_kelas,
+                t_gedung.nama_gedung,
+                t_kelas.lantai
             ')
+            ->join('t_kelas_mahasiswa', 
+                't_kelas_mahasiswa.id_matakuliah = t_matakuliah.id_matakuliah AND t_kelas_mahasiswa.id_mahasiswa = ' . $id_mahasiswa, 
+                'inner')
             ->join('t_dosen', 't_dosen.id_dosen = t_matakuliah.id_dosen', 'left')
             ->join('t_kelas', 't_kelas.id_kelas = t_matakuliah.id_kelas', 'left')
-            ->join('t_mahasiswa', 't_mahasiswa.id_prodi = t_matakuliah.id_prodi', 'left')
-            ->where('t_mahasiswa.id_mahasiswa', $id_mahasiswa)
+            ->join('t_gedung', 't_gedung.id_gedung = t_kelas.id_gedung', 'left')
+            ->where('t_kelas_mahasiswa.status', 'Aktif')
+            ->orderBy('t_matakuliah.semester', 'ASC')
             ->findAll();
     }
 
@@ -54,7 +61,7 @@ class MatakuliahModel extends Model
             ->first();
 
         if ($matakuliah) {
-            // Ambil jadwal kuliah
+            // Ambil jadwal kuliah untuk mata kuliah ini
             $jadwalModel = new \App\Models\JadwalKuliahModel();
             $matakuliah['jadwal'] = $jadwalModel->where('id_mk', $id_matakuliah)->first();
         }

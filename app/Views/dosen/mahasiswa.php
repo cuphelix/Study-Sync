@@ -245,16 +245,6 @@
             </div>
         </div>
 
-        <!-- Card 3 -->
-        <div class="stat-card card-3">
-            <div>
-                <p class="stat-title">IPK Rata-rata</p>
-                <p class="stat-value value-3"><?= $ipkRataRata > 0 ? number_format($ipkRataRata, 2) : '-' ?></p>
-            </div>
-            <div class="stat-icon circle-3">
-                <i class="uil uil-graduation-cap"></i>
-            </div>
-        </div>
 
     </div>
 
@@ -273,10 +263,8 @@
                 <tr>
                     <th>NIM</th>
                     <th>Nama</th>
-                    <th>Kelas</th>
                     <th>Semester</th>
                     <th>Mata Kuliah</th>
-                    <th>IPK</th>
                     <th>Status</th>
                 </tr>
             </thead>
@@ -287,10 +275,8 @@
                         <tr>
                             <td><?= esc($mhs['nim'] ?? '-') ?></td>
                             <td><?= esc($mhs['nama_mahasiswa'] ?? '-') ?></td>
-                            <td>-</td>
                             <td>Semester <?= $mhs['semester'] ?? '-' ?></td>
                             <td><?= esc($mhs['nama_prodi'] ?? '-') ?></td>
-                            <td><?= isset($mhs['ipk']) && $mhs['ipk'] > 0 ? number_format($mhs['ipk'], 2) : '-' ?></td>
                             <td>
                                 <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; 
                                     <?php 

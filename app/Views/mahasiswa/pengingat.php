@@ -294,64 +294,7 @@
         </div>
 
         <div class="reminder-grid">
-            <!-- Static Card 1 -->
-            <div class="reminder-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="card-title">Bimbingan Skripsi</div>
-                        <div class="card-desc">Jadwal bimbingan dengan Dosen Pembimbing untuk review BAB 3</div>
-                    </div>
-                </div>
 
-                <div class="card-meta">
-                    <div class="meta-item">
-                        <i class="far fa-calendar"></i>
-                        Sabtu, 8 November 2025
-                    </div>
-                    <div class="meta-item">
-                        <i class="far fa-clock"></i>
-                        13:00
-                    </div>
-                </div>
-
-                <div class="card-labels">
-                    <span class="label label-orange">Sedang</span>
-                    <span class="label label-grey">Pribadi</span>
-                </div>
-            </div>
-
-            <!-- Static Card 2 -->
-            <div class="reminder-card">
-                <div class="card-header">
-                    <div class="card-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div class="card-title">Tugas Basis Data</div>
-                        <div class="card-desc">Deadline pengumpulan tugas ERD dan Normalisasi Database</div>
-                    </div>
-                </div>
-
-                <div class="card-meta">
-                    <div class="meta-item">
-                        <i class="far fa-calendar"></i>
-                        Senin, 10 November 2025
-                    </div>
-                    <div class="meta-item">
-                        <i class="far fa-clock"></i>
-                        23:59
-                    </div>
-                </div>
-
-                <div class="card-labels">
-                    <span class="label label-red">Penting</span>
-                    <span class="label label-black">Otomatis</span>
-                    <span class="label label-red">📚 Tugas</span>
-                </div>
-            </div>
 
             <!-- Dynamic Cards from Database -->
             <?php if (!empty($pengingat)): ?>

@@ -15,7 +15,10 @@ class MahasiswaModel extends Model
         'password',
         'tahun_masuk',
         'semester',
-        'id_prodi'
+        'id_prodi',
+        'no_telp',  
+        'alamat',
+        'tempat_tanggal_lahir'
     ];
 
     public function getMahasiswaDetail($id_mahasiswa)
