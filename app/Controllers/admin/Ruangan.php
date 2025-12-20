@@ -48,6 +48,41 @@ class Ruangan extends BaseController
         return view('admin/ruangan/index', $data);
     }
 
+
+    public function create()
+{
+    $gedungs = $this->gedungModel->findAll();
+    
+    return view('admin/ruangan/create', [
+        'pageTitle' => 'Tambah Ruangan',
+        'gedungs' => $gedungs,
+        'validation' => \Config\Services::validation(),
+    ]);
+}
+
+public function store()
+{
+    $rules = [
+        'kode_kelas' => 'required|alpha_numeric_punct|min_length[2]|max_length[20]|is_unique[t_kelas.kode_kelas]',
+        'lantai' => 'permit_empty|integer',
+        'id_gedung' => 'permit_empty|integer',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    $data = [
+        'kode_kelas' => $this->request->getPost('kode_kelas'),
+        'lantai' => $this->request->getPost('lantai') ?: null,
+        'id_gedung' => $this->request->getPost('id_gedung') ?: null,
+    ];
+
+    $this->kelasModel->insert($data);
+
+    return redirect()->to(base_url('admin/ruangan'))->with('success', 'Ruangan berhasil ditambahkan.');
+}
+
     public function show($id)
     {
         // detail satu kelas + nama_gedung

@@ -139,13 +139,15 @@ table.table tbody td {
 
 <?= $this->section('content') ?>
 <div class="page-content">
-  <div class="header-row">
-    <div>
-      <h1>Manajemen Ruangan</h1>
-      <div class="sub">Daftar kelas / ruang yang tersedia dalam sistem</div>
+    <!-- RUANGAN INDEX -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h1>Manajemen Ruangan</h1>
+        <a href="<?= base_url('admin/ruangan/create'); ?>">
+            <button style="border:none;border-radius:999px;padding:10px 20px;background:#16a34a;color:#fff;font-size:14px;font-weight:500;cursor:pointer;">
+                + Tambah Ruangan
+            </button>
+        </a>
     </div>
-    <div class="small">Total data: <?= esc(count($ruangan ?? [])) ?></div>
-  </div>
 
   <!-- KPI (controller boleh kirim $cards) -->
   <div class="kpi-grid">

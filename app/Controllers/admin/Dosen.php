@@ -49,6 +49,42 @@ class Dosen extends BaseController
         return view('admin/dosen/index', $data);
     }
 
+    public function create()
+{
+    return view('admin/dosen/create', [
+        'title' => 'Tambah Dosen',
+        'validation' => \Config\Services::validation(),
+    ]);
+}
+
+public function store()
+{
+    $rules = [
+        'nip' => 'required|alpha_numeric_space|min_length[3]|max_length[50]|is_unique[t_dosen.nip]',
+        'nama_dosen' => 'required|min_length[3]|max_length[191]',
+        'email' => 'permit_empty|valid_email|max_length[191]|is_unique[t_dosen.email]',
+        'password' => 'required|min_length[6]',
+        'no_wa' => 'permit_empty|max_length[30]',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    $data = [
+        'nip' => $this->request->getPost('nip'),
+        'nama_dosen' => $this->request->getPost('nama_dosen'),
+        'email' => $this->request->getPost('email'),
+        'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        'no_wa' => $this->request->getPost('no_wa'),
+        'id_prodi' => $this->request->getPost('id_prodi') ?: null,
+    ];
+
+    $this->dosenModel->insert($data);
+
+    return redirect()->to(base_url('admin/dosen'))->with('success', 'Dosen berhasil ditambahkan.');
+}
+
     public function show($id)
     {
         $d = $this->dosenModel->find($id);

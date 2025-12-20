@@ -104,4 +104,24 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'au
     $routes->get('kalender/edit/(:num)', 'KalenderAkademik::edit/$1');
     $routes->post('kalender/update/(:num)', 'KalenderAkademik::update/$1');
     $routes->get('kalender/delete/(:num)', 'KalenderAkademik::delete/$1');
+
+     // MAHASISWA - CREATE
+    $routes->get('mahasiswa/create', 'Mahasiswa::create');
+    $routes->post('mahasiswa/store', 'Mahasiswa::store');
+    
+    // DOSEN - CREATE
+    $routes->get('dosen/create', 'Dosen::create');
+    $routes->post('dosen/store', 'Dosen::store');
+    
+    // MATA KULIAH - CREATE
+    $routes->get('matakuliah/create', 'Matakuliah::create');
+    $routes->post('matakuliah/store', 'Matakuliah::store');
+    
+    // RUANGAN - CREATE
+    $routes->get('ruangan/create', 'Ruangan::create');
+    $routes->post('ruangan/store', 'Ruangan::store');
+    
+    // JADWAL - CREATE
+    $routes->get('jadwal/create', 'Jadwal::create');
+    $routes->post('jadwal/store', 'Jadwal::store');
 });

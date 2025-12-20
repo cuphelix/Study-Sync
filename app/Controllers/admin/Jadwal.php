@@ -56,6 +56,54 @@ class Jadwal extends BaseController
         ]);
     }
 
+    public function create()
+{
+    $matkul = $this->mkModel->findAll();
+    $dosen = $this->dosenModel->findAll();
+    $kelas = $this->kelasModel->withGedung()->findAll();
+
+    return view('admin/jadwal/create', [
+        'pageTitle' => 'Tambah Jadwal',
+        'matkul' => $matkul,
+        'dosen' => $dosen,
+        'kelas' => $kelas,
+        'validation' => \Config\Services::validation(),
+    ]);
+}
+
+public function store()
+{
+    $rules = [
+        'id_mk' => 'required|integer',
+        'id_dosen' => 'required|integer',
+        'id_ruangan' => 'required|integer',
+        'hari' => 'required|in_list[Senin,Selasa,Rabu,Kamis,Jumat,Sabtu]',
+        'jam_mulai' => 'required',
+        'jam_selesai' => 'required',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    $data = [
+        'id_mahasiswa' => $this->request->getPost('id_mahasiswa') ?: null,
+        'id_mk' => $this->request->getPost('id_mk'),
+        'id_dosen' => $this->request->getPost('id_dosen'),
+        'id_ruangan' => $this->request->getPost('id_ruangan'),
+        'hari' => $this->request->getPost('hari'),
+        'jam_mulai' => $this->request->getPost('jam_mulai'),
+        'jam_selesai' => $this->request->getPost('jam_selesai'),
+        'minggu_ke' => $this->request->getPost('minggu_ke') ?: null,
+        'tahun_ajaran' => $this->request->getPost('tahun_ajaran') ?: null,
+        'semester' => $this->request->getPost('semester') ?: null,
+    ];
+
+    $this->jadwalModel->insert($data);
+
+    return redirect()->to(base_url('admin/jadwal'))->with('success', 'Jadwal berhasil ditambahkan.');
+}
+
     public function edit($id)
     {
         $row = $this->jadwalModel->find($id);

@@ -71,6 +71,16 @@ table.table thead th { background:#fff; color:#6b7280; font-weight:600; font-siz
         </div>
     </div>
 
+    <!-- MAHASISWA INDEX -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h1>Manajemen Mahasiswa</h1>
+    <a href="<?= base_url('admin/mahasiswa/create'); ?>">
+        <button style="border:none;border-radius:999px;padding:10px 20px;background:#16a34a;color:#fff;font-size:14px;font-weight:500;cursor:pointer;">
+            + Tambah Mahasiswa
+        </button>
+    </a>
+</div>
+
     <div class="panel">
         <form method="get" action="<?= base_url('admin/mahasiswa'); ?>">
             <div class="search-box" role="search">

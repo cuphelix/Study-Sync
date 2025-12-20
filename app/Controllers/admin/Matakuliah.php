@@ -36,6 +36,44 @@ class Matakuliah extends BaseController
         return view('admin/matakuliah/index', $data);
     }
 
+    public function create()
+{
+    return view('admin/matakuliah/create', [
+        'title' => 'Tambah Mata Kuliah',
+        'validation' => \Config\Services::validation(),
+    ]);
+}
+
+public function store()
+{
+    $rules = [
+        'kode_matakuliah' => 'required|alpha_numeric_punct|min_length[2]|max_length[20]|is_unique[t_matakuliah.kode_matakuliah]',
+        'nama_matakuliah' => 'required|min_length[3]|max_length[191]',
+        'sks' => 'required|integer|greater_than[0]|less_than_equal_to[10]',
+        'jenis' => 'required|in_list[Wajib,Pilihan]',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    $data = [
+        'kode_matakuliah' => $this->request->getPost('kode_matakuliah'),
+        'nama_matakuliah' => $this->request->getPost('nama_matakuliah'),
+        'sks' => (int)$this->request->getPost('sks'),
+        'semester' => $this->request->getPost('semester') ?: null,
+        'id_prodi' => $this->request->getPost('id_prodi') ?: null,
+        'id_dosen' => $this->request->getPost('id_dosen') ?: null,
+        'id_kelas' => $this->request->getPost('id_kelas') ?: null,
+        'jenis' => $this->request->getPost('jenis'),
+    ];
+
+    $this->mkModel->insert($data);
+
+    return redirect()->to(base_url('admin/matakuliah'))->with('success', 'Mata kuliah berhasil ditambahkan.');
+}
+
+
     public function show($id)
     {
         $id = (int)$id;

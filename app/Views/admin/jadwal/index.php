@@ -25,9 +25,15 @@
     <div class="kpi"><div><div style="color:#6b7280">Kelas Berbeda</div><div style="font-weight:700;font-size:20px"><?= esc($cards['kelas_berbeda'] ?? '-') ?></div></div><div>🏫</div></div>
   </div>
 
-  <form method="get" action="<?= base_url('admin/jadwal') ?>">
-    <div class="search-box"><input type="text" name="q" placeholder="Cari jadwal (mata kuliah, kode, dosen, kelas)..." value="<?= esc($keyword ?? '') ?>" style="border:0;background:transparent;width:100%;outline:none"></div>
-  </form>
+  <!-- MAHASISWA INDEX -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <h1>Manajemen Jadwal</h1>
+    <a href="<?= base_url('admin/jadwal/create'); ?>">
+        <button style="border:none;border-radius:999px;padding:10px 20px;background:#16a34a;color:#fff;font-size:14px;font-weight:500;cursor:pointer;">
+            + Tambah Jadwal
+        </button>
+    </a>
+</div>
 
   <div style="background:#fff;border-radius:10px;border:1px solid #eef4f8;padding:12px;">
     <table class="table" role="table">

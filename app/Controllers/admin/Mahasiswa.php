@@ -147,4 +147,44 @@ class Mahasiswa extends BaseController
 
         return redirect()->to(base_url('admin/mahasiswa'))->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
+
+    public function create()
+{
+    return view('admin/mahasiswa/create', [
+        'title' => 'Tambah Mahasiswa',
+        'validation' => \Config\Services::validation(),
+    ]);
+}
+
+public function store()
+{
+    $rules = [
+        'nim' => 'required|alpha_numeric_space|min_length[3]|max_length[50]|is_unique[t_mahasiswa.nim]',
+        'nama_mahasiswa' => 'required|min_length[3]|max_length[191]',
+        'email' => 'required|valid_email|max_length[191]|is_unique[t_mahasiswa.email]',
+        'password' => 'required|min_length[6]|max_length[100]',
+        'semester' => 'permit_empty|integer',
+        'tahun_masuk' => 'permit_empty|integer|exact_length[4]',
+    ];
+
+    if (!$this->validate($rules)) {
+        return redirect()->back()->withInput()->with('validation', $this->validator);
+    }
+
+    $data = [
+        'nim' => $this->request->getPost('nim'),
+        'nama_mahasiswa' => $this->request->getPost('nama_mahasiswa'),
+        'email' => $this->request->getPost('email'),
+        'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+        'semester' => $this->request->getPost('semester'),
+        'tahun_masuk' => $this->request->getPost('tahun_masuk'),
+        'id_prodi' => $this->request->getPost('id_prodi') ?: null,
+        'status' => 'Aktif',
+    ];
+
+    $this->mahasiswaModel->insert($data);
+
+    return redirect()->to(base_url('admin/mahasiswa'))->with('success', 'Mahasiswa berhasil ditambahkan.');
+}
+
 }

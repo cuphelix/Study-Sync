@@ -230,6 +230,16 @@
         </div>
     </section>
 
+                <!-- DOSEN INDEX -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h1>Manajemen Dosen</h1>
+        <a href="<?= base_url('admin/dosen/create'); ?>">
+            <button style="border:none;border-radius:999px;padding:10px 20px;background:#16a34a;color:#fff;font-size:14px;font-weight:500;cursor:pointer;">
+                + Tambah Dosen
+            </button>
+        </a>
+    </div>
+
     <!-- LIST DOSEN -->
     <section class="dosen-list-card">
         <div class="dosen-list-header">

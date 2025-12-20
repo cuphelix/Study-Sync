@@ -37,8 +37,15 @@ table.table th, table.table td { padding:12px 10px; border-bottom:1px solid #eef
 <?= $this->section('content') ?>
 
 <div class="page-content">
-
-    <h1 style="margin-bottom:14px;">Manajemen Mata Kuliah</h1>
+                    <!-- Mata Kuliah INDEX -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h1>Manajemen Mata Kuliah</h1>
+        <a href="<?= base_url('admin/matakuliah/create'); ?>">
+            <button style="border:none;border-radius:999px;padding:10px 20px;background:#16a34a;color:#fff;font-size:14px;font-weight:500;cursor:pointer;">
+                + Tambah Mata Kuliah
+            </button>
+        </a>
+    </div>
 
     <!-- KPI CARDS -->
     <div class="kpi-grid">
