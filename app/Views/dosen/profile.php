@@ -186,7 +186,6 @@
   <div class="avatar"><?= strtoupper(substr($dosen['nama_dosen'] ?? 'D', 0, 1)) ?><?= strtoupper(substr(explode(' ', $dosen['nama_dosen'] ?? 'D')[1] ?? '', 0, 1)) ?></div>
 
   <div class="header-card">
-    <button class="edit-btn">Edit Profil</button>
 
     <div class="name"><?= esc($dosen['nama_dosen'] ?? 'Dosen') ?></div>
 

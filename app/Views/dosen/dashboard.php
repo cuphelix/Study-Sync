@@ -669,7 +669,7 @@
                     <h3><?= esc($dosen->nama_dosen ?? 'Dosen') ?></h3>
                     <p><?= esc($prodi->nama_prodi ?? 'Program Studi') ?></p>
 
-                    <button class="btn-profile" onclick="location.href='<?= base_url('dosen/profile') ?>'">
+                    <button class="btn-profile" onclick="location.href='<?= base_url('dosen/profil') ?>'">
                         <i class="fas fa-user"></i> Lihat Profil
                     </button>
                     <button class="btn-logout" onclick="location.href='<?= base_url('logout') ?>'">
