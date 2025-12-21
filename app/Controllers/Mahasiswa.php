@@ -164,9 +164,10 @@ class Mahasiswa extends BaseController
             ->where("tanggal_selesai >=", "$year-$month-01")
             ->findAll();
 
-        // Event Mendatang
+        // PERBAIKAN: Event Mendatang (termasuk yang sedang berlangsung)
+        // Ambil event yang tanggal selesainya >= hari ini
         $data['upcoming'] = $this->kalenderModel
-            ->where('tanggal_mulai >=', date('Y-m-d'))
+            ->where('tanggal_selesai >=', date('Y-m-d'))
             ->orderBy('tanggal_mulai', 'ASC')
             ->limit(10)
             ->findAll();
