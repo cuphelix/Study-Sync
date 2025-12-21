@@ -21,7 +21,8 @@ class MatakuliahModel extends Model
 
     public function getMatakuliahByMahasiswa($id_mahasiswa)
     {
-        // PERBAIKAN: Filter berdasarkan t_kelas_mahasiswa, bukan id_prodi
+        // PERBAIKAN: Ambil mata kuliah berdasarkan jadwal_kuliah.id_mahasiswa
+        // Gunakan DISTINCT untuk hindari duplikat
         return $this->select('
                 t_matakuliah.*,
                 t_dosen.nama_dosen,
@@ -29,13 +30,12 @@ class MatakuliahModel extends Model
                 t_gedung.nama_gedung,
                 t_kelas.lantai
             ')
-            ->join('t_kelas_mahasiswa', 
-                't_kelas_mahasiswa.id_matakuliah = t_matakuliah.id_matakuliah AND t_kelas_mahasiswa.id_mahasiswa = ' . $id_mahasiswa, 
-                'inner')
+            ->distinct()
+            ->join('jadwal_kuliah', 'jadwal_kuliah.id_mk = t_matakuliah.id_matakuliah', 'inner')
             ->join('t_dosen', 't_dosen.id_dosen = t_matakuliah.id_dosen', 'left')
             ->join('t_kelas', 't_kelas.id_kelas = t_matakuliah.id_kelas', 'left')
             ->join('t_gedung', 't_gedung.id_gedung = t_kelas.id_gedung', 'left')
-            ->where('t_kelas_mahasiswa.status', 'Aktif')
+            ->where('jadwal_kuliah.id_mahasiswa', $id_mahasiswa)
             ->orderBy('t_matakuliah.semester', 'ASC')
             ->findAll();
     }

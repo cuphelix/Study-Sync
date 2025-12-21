@@ -36,11 +36,8 @@ class JadwalKuliahModel extends Model
             ->where('jadwal_kuliah.hari', $hari);
         
         if ($id_mahasiswa !== null) {
-            // PERBAIKAN: Filter berdasarkan mata kuliah yang diikuti mahasiswa
-            $query->join('t_kelas_mahasiswa', 
-                't_kelas_mahasiswa.id_matakuliah = jadwal_kuliah.id_mk AND t_kelas_mahasiswa.id_mahasiswa = ' . $id_mahasiswa, 
-                'inner')
-                ->where('t_kelas_mahasiswa.status', 'Aktif');
+            // GUNAKAN id_mahasiswa dari jadwal_kuliah (LOGIC LAMA yang BENAR)
+            $query->where('jadwal_kuliah.id_mahasiswa', $id_mahasiswa);
         }
         
         return $query->orderBy('jadwal_kuliah.jam_mulai', 'ASC')
@@ -49,7 +46,6 @@ class JadwalKuliahModel extends Model
 
     public function getJadwalWithDetails($id_mahasiswa = null)
     {
-        // PERBAIKAN: Query dengan filter berdasarkan t_kelas_mahasiswa
         $query = $this->select('
                 jadwal_kuliah.id_jadwal,
                 jadwal_kuliah.id_mahasiswa,
@@ -72,16 +68,11 @@ class JadwalKuliahModel extends Model
             ->join('t_kelas', 't_kelas.id_kelas = jadwal_kuliah.id_ruangan', 'left');
         
         if ($id_mahasiswa !== null) {
-            // PERBAIKAN: Filter berdasarkan mata kuliah yang diikuti mahasiswa
-            // BUKAN berdasarkan id_mahasiswa di tabel jadwal_kuliah
-            $query->join('t_kelas_mahasiswa', 
-                't_kelas_mahasiswa.id_matakuliah = jadwal_kuliah.id_mk AND t_kelas_mahasiswa.id_mahasiswa = ' . $id_mahasiswa, 
-                'inner')
-                ->where('t_kelas_mahasiswa.status', 'Aktif');
+            // GUNAKAN id_mahasiswa dari jadwal_kuliah (LOGIC LAMA yang BENAR)
+            $query->where('jadwal_kuliah.id_mahasiswa', $id_mahasiswa);
         }
         
-        // Pastikan tidak ada duplikasi dengan GROUP BY
-        $query->groupBy('jadwal_kuliah.id_jadwal');
+        // HAPUS groupBy karena sudah tidak perlu (tidak ada JOIN yang bisa bikin duplikat)
         
         return $query->orderBy("FIELD(jadwal_kuliah.hari, 'Senin','Selasa','Rabu','Kamis','Jumat','Sabtu')", '', false)
             ->orderBy('jadwal_kuliah.jam_mulai', 'ASC')
